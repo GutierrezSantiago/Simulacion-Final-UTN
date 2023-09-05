@@ -1,4 +1,6 @@
-namespace TP4
+using TP_Final.Entidades;
+
+namespace TP_Final
 {
     internal static class Program
     {

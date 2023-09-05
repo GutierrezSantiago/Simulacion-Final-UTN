@@ -8,7 +8,7 @@ using System.Windows.Forms;
 using System.IO;
 using System.Data.Common;
 
-namespace TP4.Entidades
+namespace TP_Final.Entidades
 {
     internal class CsvReader
     {

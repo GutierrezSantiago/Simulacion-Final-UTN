@@ -1,4 +1,4 @@
-﻿namespace TP4
+﻿namespace TP_Final
 {
     partial class PantallaVisualizacion
     {

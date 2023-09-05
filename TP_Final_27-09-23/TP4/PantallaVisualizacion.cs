@@ -7,9 +7,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using TP4.Entidades;
+using TP_Final.Entidades;
 
-namespace TP4
+namespace TP_Final
 {
     public partial class PantallaVisualizacion : Form
     {
@@ -37,12 +37,7 @@ namespace TP4
                 columna.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
             }
 
-            // Cargamos la probabilidad
-
-            txt_tiempoPromEsperaBB.Text = resultados[0].ToString();
-            txt_tiempoPromEsperaF.Text = resultados[1].ToString();
-            txt_tiempoPromEsperaHB.Text = resultados[2].ToString();
-            txt_porcRetiraSinJugar.Text = resultados[3].ToString();
+            // Cargamos los estadisticos
 
         }
     }

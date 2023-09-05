@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TP4.Entidades
+namespace TP_Final.Entidades
 {
     internal class ValidadorParametros
     {

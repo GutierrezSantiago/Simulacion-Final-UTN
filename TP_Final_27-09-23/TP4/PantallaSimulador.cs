@@ -1,23 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+using TP_Final.Entidades;
 
-namespace TP_Final.Entidades
+namespace TP_Final
 {
-    public partial class PantallaSimuladorParquimetros : Form
+    public partial class PantallaSimulador : Form
     {
         ValidadorParametros validadorParametros;
-        public PantallaSimuladorParquimetros()
+        public PantallaSimulador()
         {
             InitializeComponent();
             validadorParametros = new ValidadorParametros();
         }
+
         private bool estaVacio(string texto)
         {
             return texto == "";
@@ -26,7 +19,7 @@ namespace TP_Final.Entidades
         private bool faltanParams()
         {
             bool faltaObligatorio = estaVacio(txt_tiempoSimulacion.Text) || estaVacio(txt_cantIteraciones.Text) || estaVacio(txt_horaDesde.Text);
-
+           
             return (faltaObligatorio);
         }
 
@@ -41,6 +34,7 @@ namespace TP_Final.Entidades
         }
         private void btn_generar_Click(object sender, EventArgs e)
         {
+
             if (faltanParams())
             {
                 MessageBox.Show("Faltan parametros!", "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -50,7 +44,7 @@ namespace TP_Final.Entidades
             double inicioImp = Double.Parse(txt_horaDesde.Text) * 60;
             int cantidad = Int32.Parse(txt_cantIteraciones.Text);
             double finSim = Double.Parse(txt_tiempoSimulacion.Text);
-
+            
 
             if (!validarParamsGestor(inicioImp, cantidad, finSim))
             {
@@ -65,6 +59,7 @@ namespace TP_Final.Entidades
             //pantallaVisualizacion.ShowDialog();
 
         }
+
 
         private void txt_DoubleParam_KeyPress(object sender, KeyPressEventArgs e)
         {
