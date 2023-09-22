@@ -448,6 +448,7 @@ namespace TP_Final.Entidades
                 }
                 
             }
+            double finTurnoEstacionamiento = double.Parse(linea[15+indiceParquimetro]);
 
             //Corroboramos si hay que multarlo
             if (VehiculosEnSistema[indiceParquimetro] != null && Parquimetros[indiceParquimetro].getNombreEstado() == "En Infracción" )
