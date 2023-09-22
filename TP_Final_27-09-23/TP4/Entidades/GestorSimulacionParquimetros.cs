@@ -141,6 +141,22 @@ namespace TP_Final.Entidades
         {
             return distFinEscrituraBoleta;
         }
+        private int HayParquimetroLibre()
+        {
+            for (int i = 0; i < Parquimetros.Length; i++)
+            {
+                if (Parquimetros[i].EstaLibre() && VehiculosEnSistema[i] is null)
+                {
+                    return i;
+                }
+            }
+            return -1;
+        }
+
+        private void AsignarVehiculoAVectorEstado(Vehiculo vec, int indiceParquimetro)
+        {
+            VehiculosEnSistema[indiceParquimetro] = vec;
+        }
         #endregion
 
         #region Calculo de Estadisticas
@@ -173,9 +189,11 @@ namespace TP_Final.Entidades
                 linea[i] = "";
             }
         }
+
         #endregion
 
         #region Llegada
+        #region LlegadaVehiculo
         private void GenerarProximaLlegadaVehiculo(string[] linea, double[] relojYEvento)
         {
             double rnd1;
@@ -206,31 +224,6 @@ namespace TP_Final.Entidades
             }
              
         }
-
-        private void GenerarProximaLlegadaInspector(string[] linea, double[] relojYEvento)
-        {
-            double tEntreLlegadas = CalcularLlegadaInspector();
-            tDeEventos[1] = tEntreLlegadas + relojYEvento[0];
-            linea[7] = tDeEventos[1].ToString();
-        }
-
-        private int HayParquimetroLibre()
-        {
-            for (int i = 0; i < Parquimetros.Length; i++)
-            {
-                if (Parquimetros[i].EstaLibre())
-                {
-                    return i;
-                }
-            }
-            return -1;
-        }
-
-        private void AsignarVehiculoAVectorEstado(Vehiculo vec, int indiceParquimetro)
-        {
-            VehiculosEnSistema[indiceParquimetro] = vec;
-        }
-
         private string[] LlegadaVehiculo(string[] lineaAnt, double[] relojYEvento)
         {
             string[] linea = lineaAnt;
@@ -244,13 +237,13 @@ namespace TP_Final.Entidades
             {
                 linea[4] = "";
             }
-            
-           
+
+
             // generamos proxima llegada y la anotamos en el vector estado 
 
             GenerarProximaLlegadaVehiculo(linea, relojYEvento);
             int indiceParquimetro = this.HayParquimetroLibre();
-            if (indiceParquimetro == -1) // si hay menos de 5 en cola, creamos un nuevo deportista segun quien llego
+            if (indiceParquimetro == -1) // estan todos ocupados
             {
                 int retirados = int.Parse(linea[28]) + 1;
                 linea[28] = retirados.ToString();
@@ -258,24 +251,34 @@ namespace TP_Final.Entidades
             }
             else
             {
-                Vehiculo vec = new Vehiculo(EstadosVehiculo[0]); // se crea un nuevo deportista con estado en espera
+                Vehiculo vec = new Vehiculo(EstadosVehiculo[0]); // se crea un nuevo vehiculo con estado estacionado
 
+                GenerarEstacionamientoParquimetro(linea, relojYEvento[0], vec, indiceParquimetro);
 
-                GenerarEstacionamientoParquimetro(linea, relojYEvento[0], vec, indiceParquimetro); // generamos ocupacion y la cargamos al vector estado (cambiando estado de Dep a JUGANDO y de Cancha a OCUPADA
-                
 
             }
 
-            
+
             EscribirVehiculosVectorEstado(linea);
             return linea;
         }
+        #endregion
+        private void GenerarProximaLlegadaInspector(string[] linea, double[] relojYEvento)
+        {
+            double tEntreLlegadas = CalcularLlegadaInspector();
+            tDeEventos[1] = tEntreLlegadas + relojYEvento[0];
+            linea[7] = tDeEventos[1].ToString();
+        }
+
+
+
+        
 
         private string[] LlegadaInspector(string[] lineaAnt, double[] relojYEvento)
         {
             string[] linea = lineaAnt;
 
-            GenerarProximaLlegadaInspector(linea, relojYEvento); // generamos proxima llegada y la anotamos en el vector estado
+            // GenerarProximaLlegadaInspector(linea, relojYEvento); // generamos proxima llegada y la anotamos en el vector estado
             for (int i = 0; i < Parquimetros.Length; i++)
             {
                 if (!Parquimetros[i].EstaLibre())
@@ -307,7 +310,7 @@ namespace TP_Final.Entidades
             linea[15+indiceParquimetro] = tDeEventos[7 + indiceParquimetro].ToString();
 
             AsignarVehiculoAVectorEstado(vec, indiceParquimetro); // en cualquier caso, lo sumamos al vector estado
-            Parquimetros[indiceParquimetro].SetEstado(EstadosParquimetro[1]); // cambiamos el estado de la cancha a ocupada
+            Parquimetros[indiceParquimetro].SetEstado(EstadosParquimetro[1]); // cambiamos el estado de la a ocupado
             linea[22+indiceParquimetro] = Parquimetros[indiceParquimetro].getNombreEstado(); // cambiamos la linea para mostrar estado ocupado
         }
 
@@ -558,7 +561,7 @@ namespace TP_Final.Entidades
             GenerarProximaLlegadaVehiculo(lineaAnt, new double[] {0, 0});
 
             // Llegada Inspector
-            tDeEventos[1] = CalcularLlegadaInspector();
+            tDeEventos[1] = (double)Int32.MaxValue;//CalcularLlegadaInspector();
             lineaAnt[7] = (tDeEventos[1] + reloj).ToString();
 
             // Fin Turno de Estacionamiento y Estacionamiento Parquimetros : Inicio no hay nada
@@ -628,7 +631,7 @@ namespace TP_Final.Entidades
 
                 // LV, LI, FE1, FE2, FE3, FE4, FE5, FT1, FT2, FT3, FT4, FT5, FI, FB, FinSim
                 if (relojYEvento[1] == 0) { linea = LlegadaVehiculo(lineaAnt, relojYEvento); }
-                else if (relojYEvento[1] == 1) { linea = LlegadaInspector(lineaAnt, relojYEvento); }
+                //else if (relojYEvento[1] == 1) { linea = LlegadaInspector(lineaAnt, relojYEvento); }
                 else if (relojYEvento[1] == 7) { linea = FinTurnoEstacionamiento(lineaAnt, relojYEvento[0], 0); }
                 else if (relojYEvento[1] == 8) { linea = FinTurnoEstacionamiento(lineaAnt, relojYEvento[0], 1); }
                 else if (relojYEvento[1] == 9) { linea = FinTurnoEstacionamiento(lineaAnt, relojYEvento[0], 2); }
@@ -641,16 +644,16 @@ namespace TP_Final.Entidades
                 else if (relojYEvento[1] == 6) { linea = FinEstacionamiento(lineaAnt, relojYEvento[0], 4); }
                 else if (relojYEvento[1] == 12) // SE HACE MAS QUE LLAMAR AL FIN PORQUE HAY QUE CONSEGUIR EL INDICE DE PARQUIMETRO
                 {
-                    int indiceParquimetro = getIndiceParquimetro(linea[27]);
-                    linea = FinInspeccion(lineaAnt, relojYEvento[0], indiceParquimetro); 
+                    //int indiceParquimetro = getIndiceParquimetro(linea[27]);
+                    //linea = FinInspeccion(lineaAnt, relojYEvento[0], indiceParquimetro); 
                 }
                 else if (relojYEvento[1] == 13) // SE HACE MAS QUE LLAMAR AL FIN PORQUE HAY QUE CONSEGUIR EL INDICE DE PARQUIMETRO
                 {
-                    int indiceParquimetro = getIndiceParquimetro(linea[27]);
-                    linea = FinEscrituraBoleta(lineaAnt, relojYEvento[0], indiceParquimetro); 
+                    //int indiceParquimetro = getIndiceParquimetro(linea[27]);
+                    //linea = FinEscrituraBoleta(lineaAnt, relojYEvento[0], indiceParquimetro); 
                 }
-                else 
-                    
+                else
+
                 { // FIN DE SIMULACION
 
                     string[] blank = new string[35];
