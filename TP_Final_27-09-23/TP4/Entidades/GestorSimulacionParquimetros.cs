@@ -708,7 +708,7 @@ namespace TP_Final.Entidades
 
                 // Escribimos datos identificatorios del evento actual
                 nroIteraciones++;
-                linea[0] = Eventos[(int)relojYEvento[1]] + " " + nroIteraciones.ToString();
+                linea[0] = nroIteraciones.ToString() + " - " + Eventos[(int)relojYEvento[1]];
                 linea[1] = GeneradorNros.Truncar(relojYEvento[0]).ToString();
                 
                 lineaAnt = linea; // guardamos la linea anterior antes de la proxima iteracion
