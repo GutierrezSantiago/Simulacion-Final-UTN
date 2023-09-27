@@ -11,7 +11,7 @@ namespace TP_Final.Entidades
     {
         public string Datos = @"./datos.csv";
         private Estado[] EstadosVehiculo = { new Estado("Estacionado"), new Estado("Siendo Multado"), new Estado("Finalizo") };
-        private Estado[] EstadosParquimetro = { new Estado("Libre"), new Estado("Ocupado"), new Estado("En Infracción") };
+        private Estado[] EstadosParquimetro = { new Estado("Libre"), new Estado("Ocupado"), new Estado("En Infraccion") };
         private Estado[] EstadosInspector = { new Estado("Ausente"), new Estado("Inspeccionando 1"), new Estado("Inspeccionando 2"), new Estado("Inspeccionando 3"), new Estado("Inspeccionando 4"), new Estado("Inspeccionando 5"), new Estado("Escribiendo Boleta 1"), new Estado("Escribiendo Boleta 2"), new Estado("Escribiendo Boleta 3"), new Estado("Escribiendo Boleta 4"), new Estado("Escribiendo Boleta 5") };
 
         private string[] Eventos = { "Llegada Vehiculo", "Llegada Inspector", "Fin de Estacionamiento 1", "Fin de Estacionamiento 2", "Fin de Estacionamiento 3", "Fin de Estacionamiento 4", "Fin de Estacionamiento 5", "Fin de Turno de Estacionamiento 1", "Fin de Turno de Estacionamiento 2", "Fin de Turno de Estacionamiento 3", "Fin de Turno de Estacionamiento 4", "Fin de Turno de Estacionamiento 5", "Fin de Inspeccion", "Fin de Escritura de Boleta", "Fin de Simulación" };
@@ -122,6 +122,7 @@ namespace TP_Final.Entidades
         }
         public string SeDemoraEstacionamiento(double rnd)
         {
+
             if (rnd < 0.8)
             {
                 return "NO";
@@ -263,6 +264,8 @@ namespace TP_Final.Entidades
             return linea;
         }
         #endregion
+
+        #region LlegadaInspector
         private void GenerarProximaLlegadaInspector(string[] linea, double[] relojYEvento)
         {
             double tEntreLlegadas = CalcularLlegadaInspector();
@@ -270,28 +273,26 @@ namespace TP_Final.Entidades
             linea[7] = tDeEventos[1].ToString();
         }
 
-
-
-        
-
         private string[] LlegadaInspector(string[] lineaAnt, double[] relojYEvento)
         {
             string[] linea = lineaAnt;
 
-            // GenerarProximaLlegadaInspector(linea, relojYEvento); // generamos proxima llegada y la anotamos en el vector estado
+            GenerarProximaLlegadaInspector(linea, relojYEvento); // generamos proxima llegada y la anotamos en el vector estado
             for (int i = 0; i < Parquimetros.Length; i++)
             {
                 if (!Parquimetros[i].EstaLibre())
                 {
                     GenerarInspeccionVehiculo(linea, relojYEvento[0], i);
-                    break; //Empieza la primera inspección, se corrobora el resto de parquimetros luego de finalizar la inspección del primero
+                    return linea; //Empieza la primera inspección, se corrobora el resto de parquimetros luego de finalizar la inspección del primero
                 }
             }
             return linea;
         }
         #endregion
+        #endregion
 
         #region Estacionamiento-Inspeccion-EscrituraBoleta
+        #region Estacionamiento
         private void GenerarEstacionamientoParquimetro(string[] linea, double reloj, Vehiculo vec, int indiceParquimetro)
         {
  
@@ -300,6 +301,7 @@ namespace TP_Final.Entidades
             // generamos los datos de la ocupacion
             double rnd = GeneradorNros.Truncar(RndDemora.NextDouble());
             double tOcup = CalcularFinEstacionamiento(rnd);
+
             tDeEventos[2+indiceParquimetro] = GeneradorNros.Truncar(tOcup + reloj); // cargamos al vector de eventos (en el indice 2 comienzan los fin estacionamiento)
             tDeEventos[7 + indiceParquimetro] = CalcularFinTurnoEstacionamiento() + reloj;// cargamos al vector de eventos (en el indice 7 comienzan los fin estacionamiento)
 
@@ -314,42 +316,6 @@ namespace TP_Final.Entidades
             linea[22+indiceParquimetro] = Parquimetros[indiceParquimetro].getNombreEstado(); // cambiamos la linea para mostrar estado ocupado
         }
 
-        private void GenerarInspeccionVehiculo(string[] linea, double reloj, int indiceParquimetro)
-        {
-            // generamos los datos de la inspeccion
-            double tInspecc = CalcularFinInspeccion();
-            tDeEventos[12] = tInspecc + reloj;
-
-            //cargamos el vector estado
-            linea[20] = tDeEventos[12].ToString();
-
-            //Cambiamos el estado de inspector
-            Estado estado = EstadosInspector[1 + indiceParquimetro]; //Obtenemos el subestado de Inspeccionando (numero de parquimetro)
-            Inspector.SetEstado(estado);
-
-            //cargamos el vector estado
-            linea[27] = Inspector.getNombreEstado();
-            EscribirVehiculosVectorEstado(linea);
-        }
-        private void GenerarFinEscrituraBoleta(string[] linea, double reloj, int indiceParquimetro)
-        {
-            // generamos los datos de la escritra de boleta
-            double tEscritura = CalcularFinEscrituraBoleta();
-            tDeEventos[13] = tEscritura + reloj;
-
-            //cargamos el vector estado
-            linea[21] = tDeEventos[13].ToString();
-
-            //Cambiamos el estado de inspector
-            Estado estado = EstadosInspector[6 + indiceParquimetro]; //Obtenemos el subestado de Inspeccionando (numero de parquimetro)
-            Inspector.SetEstado(estado);
-
-            VehiculosEnSistema[indiceParquimetro].SetEstado(EstadosVehiculo[1]); // Estado a siendo multado
-
-            //cargamos el vector estado
-            linea[27] = Inspector.getNombreEstado();
-            EscribirVehiculosVectorEstado(linea);
-        }
         private string[] FinEstacionamiento(string[] lineaAnt, double reloj, int indiceParquimetro)
         {
             string[] linea = lineaAnt;
@@ -360,7 +326,7 @@ namespace TP_Final.Entidades
 
                 // limpiamos el vector estado y el tDeEventos de fin estacionamiento
                 linea[10 + indiceParquimetro] = "";
-                tDeEventos[2+indiceParquimetro] = (double)Int32.MaxValue;
+                tDeEventos[2 + indiceParquimetro] = (double)Int32.MaxValue;
 
                 // limpiamos el vector estado y el tDeEventos de fin de turno de estacionamiento
                 // en la proxima linea (flujo normal)
@@ -372,18 +338,35 @@ namespace TP_Final.Entidades
                 linea[22 + indiceParquimetro] = Parquimetros[indiceParquimetro].getNombreEstado();
 
                 // SE VA MIENTRAS INSPECCION CASO 1 : SE MANEJA DESDE ACA,
-                // CANCELAMOS FIN INSPECCION O LO ADELANTAMOS
-                // Si se esta inspeccionando se cancela el finInspeccion
+                // CANCELAMOS FIN INSPECCION
+               
+                // SE VA MIENTRAS ESTA SIENDO INSPECCIONADO? SE CANCELA INSPECCIÓN Y SE FIJA SI HAY OTROS AUTOS RESTANTES
+                if (Inspector.getNombreEstado() == EstadosInspector[1 + indiceParquimetro].GetNombre())
+                {
+                    //nos fijamos en el resto de parquimetros is hay algun auto estacionado
+                    for (int i = indiceParquimetro + 1; i < Parquimetros.Length; i++)
+                    {
+                        //nos fijamos en el resto de parquimetros is hay algun auto estacionado
+                        if (!Parquimetros[i].EstaLibre())
+                        {
+                            GenerarInspeccionVehiculo(linea, reloj, i);
+                            EscribirVehiculosVectorEstado(linea); // actualizamos el vector estado con el vehiculo
+                            return linea;
+                        }
+                    }
 
-                // PARA CASO 2: SE ADELANTA LA FINALIZACION
-                if (Inspector.getNombreEstado() == EstadosInspector[1+indiceParquimetro].GetNombre()) 
-                { 
-                    tDeEventos[12] = reloj + 0.000001;
-                    linea[20] = tDeEventos[12].ToString();
+                    //se va el inspector
+                    Inspector.SetEstado(EstadosInspector[0]);
+                    linea[27] = Inspector.getNombreEstado();
+                    linea[20] = "";
+                    tDeEventos[12] = (double)Int32.MaxValue;
+
+                    return linea;
                 }
 
 
-            } else  // Esta siendo multado
+            }
+            else  // Esta siendo multado
             {
                 // SE ESTABLECE EL FIN DE ESTACIONAMIENTO APENAS TERMINA DE MULTAR
                 tDeEventos[2 + indiceParquimetro] = tDeEventos[13] + 0.00000000001;
@@ -403,17 +386,37 @@ namespace TP_Final.Entidades
             linea[15 + indiceParquimetro] = "";
             tDeEventos[7 + indiceParquimetro] = (double)Int32.MaxValue;
 
-            // cambiamos el parquimetro a En infraccion
-            if (linea[9] == "SI")
+            // cambiamos el parquimetro a En infraccion si termino el turno y sigue estando ocupado
+            if (Parquimetros[indiceParquimetro].getNombreEstado() == "Ocupado")
             {
                 Parquimetros[indiceParquimetro].SetEstado(EstadosParquimetro[2]);
                 linea[22 + indiceParquimetro] = Parquimetros[indiceParquimetro].getNombreEstado();
             }
-            
 
-            
+
+
 
             return linea;
+        }
+        #endregion
+
+        #region Inspeccion
+        private void GenerarInspeccionVehiculo(string[] linea, double reloj, int indiceParquimetro)
+        {
+            // generamos los datos de la inspeccion
+            double tInspecc = CalcularFinInspeccion();
+            tDeEventos[12] = tInspecc + reloj;
+
+            //cargamos el vector estado
+            linea[20] = tDeEventos[12].ToString();
+
+            //Cambiamos el estado de inspector
+            Estado estado = EstadosInspector[1 + indiceParquimetro]; //Obtenemos el subestado de Inspeccionando (numero de parquimetro)
+            Inspector.SetEstado(estado);
+
+            //cargamos el vector estado
+            linea[27] = Inspector.getNombreEstado();
+            EscribirVehiculosVectorEstado(linea);
         }
 
         // NO ESTA HECHO (IGULA A FIN ESTACIONAMIENTO Y FALTA SI ESTA DEMORADO GENERAR ESCRIBIR BOLETA
@@ -421,40 +424,8 @@ namespace TP_Final.Entidades
         {
             string[] linea = lineaAnt;
 
-            if (linea[10+indiceParquimetro] == "" || linea[10 + indiceParquimetro] == null)
-            {
-                //nos fijamos en el resto de parquimetros is hay algun auto estacionado
-                for (int i = indiceParquimetro+1; i < Parquimetros.Length; i++)
-                {
-                    //nos fijamos en el resto de parquimetros is hay algun auto estacionado
-                    if (!Parquimetros[i].EstaLibre())
-                    {
-                        GenerarInspeccionVehiculo(linea, reloj, i);
-                        EscribirVehiculosVectorEstado(linea); // actualizamos el vector estado con el vehiculo
-                        return linea;
-                    }
-                }
-            }
-
-            // SE VA ANTES DEL FIN INSPECCION, CASO 2: SE MANEJA DESDE ACA, IF NULL BLA BLA.
-            if (VehiculosEnSistema[indiceParquimetro] == null)
-            {
-                for (int i = indiceParquimetro + 1; i < Parquimetros.Length; i++)
-                {
-                    //nos fijamos en el resto de parquimetros is hay algun auto estacionado
-                    if (!Parquimetros[i].EstaLibre())
-                    {
-                        GenerarInspeccionVehiculo(linea, reloj, i);
-                        EscribirVehiculosVectorEstado(linea); // actualizamos el vector estado con el vehiculo
-                        return linea;
-                    }
-                }
-                
-            }
-            double finTurnoEstacionamiento = double.Parse(linea[15+indiceParquimetro]);
-
             //Corroboramos si hay que multarlo
-            if (VehiculosEnSistema[indiceParquimetro] != null && Parquimetros[indiceParquimetro].getNombreEstado() == "En Infracción" )
+            if (Parquimetros[indiceParquimetro].getNombreEstado() == "En Infraccion")
             {
                 VehiculosEnSistema[indiceParquimetro].SetEstado(EstadosVehiculo[1]); // Estado a siendo multado
 
@@ -471,20 +442,53 @@ namespace TP_Final.Entidades
                 EscribirVehiculosVectorEstado(linea); // actualizamos el vector estado con el vehiculo
                 return linea;
 
-            } else
+            }
+
+
+            //nos fijamos en el resto de parquimetros is hay algun auto estacionado
+            for (int i = indiceParquimetro + 1; i < Parquimetros.Length; i++)
             {
                 //nos fijamos en el resto de parquimetros is hay algun auto estacionado
-                for (int i = indiceParquimetro+1; i < Parquimetros.Length; i++)
+                if (!Parquimetros[i].EstaLibre())
                 {
-                    //nos fijamos en el resto de parquimetros is hay algun auto estacionado
-                    if (!Parquimetros[i].EstaLibre())
-                    {
-                        GenerarInspeccionVehiculo(linea, reloj, i);
-                        EscribirVehiculosVectorEstado(linea); // actualizamos el vector estado con el vehiculo
-                        return linea;
-                    }
+                    GenerarInspeccionVehiculo(linea, reloj, i);
+                    EscribirVehiculosVectorEstado(linea); // actualizamos el vector estado con el vehiculo
+                    return linea;
                 }
             }
+
+
+            //// SE VA ANTES DEL FIN INSPECCION, CASO 2: SE MANEJA DESDE ACA, IF NULL BLA BLA.
+            //if (VehiculosEnSistema[indiceParquimetro] == null)
+            //{
+            //    for (int i = indiceParquimetro + 1; i < Parquimetros.Length; i++)
+            //    {
+            //        //nos fijamos en el resto de parquimetros is hay algun auto estacionado
+            //        if (!Parquimetros[i].EstaLibre())
+            //        {
+            //            GenerarInspeccionVehiculo(linea, reloj, i);
+            //            EscribirVehiculosVectorEstado(linea); // actualizamos el vector estado con el vehiculo
+            //            return linea;
+            //        }
+            //    }
+
+            //}
+
+            
+            //else
+            //{
+            //    //nos fijamos en el resto de parquimetros is hay algun auto estacionado
+            //    for (int i = indiceParquimetro + 1; i < Parquimetros.Length; i++)
+            //    {
+            //        //nos fijamos en el resto de parquimetros is hay algun auto estacionado
+            //        if (!Parquimetros[i].EstaLibre())
+            //        {
+            //            GenerarInspeccionVehiculo(linea, reloj, i);
+            //            EscribirVehiculosVectorEstado(linea); // actualizamos el vector estado con el vehiculo
+            //            return linea;
+            //        }
+            //    }
+            //}
 
             //se va el inspector
             Inspector.SetEstado(EstadosInspector[0]);
@@ -494,13 +498,35 @@ namespace TP_Final.Entidades
 
             //se pasa el auto a estacionado si no se retiro antes del fin inspecccion
             if (VehiculosEnSistema[indiceParquimetro] != null) { VehiculosEnSistema[indiceParquimetro].SetEstado(EstadosVehiculo[0]); }
-            
+
 
             EscribirVehiculosVectorEstado(linea);// actualizamos el vector estado con el vehiculo
 
             return linea;
 
-            
+
+        }
+        #endregion
+
+        #region EscrituraBoleta
+        private void GenerarFinEscrituraBoleta(string[] linea, double reloj, int indiceParquimetro)
+        {
+            // generamos los datos de la escritra de boleta
+            double tEscritura = CalcularFinEscrituraBoleta();
+            tDeEventos[13] = tEscritura + reloj;
+
+            //cargamos el vector estado
+            linea[21] = tDeEventos[13].ToString();
+
+            //Cambiamos el estado de inspector
+            Estado estado = EstadosInspector[6 + indiceParquimetro]; //Obtenemos el subestado de Inspeccionando (numero de parquimetro)
+            Inspector.SetEstado(estado);
+
+            VehiculosEnSistema[indiceParquimetro].SetEstado(EstadosVehiculo[1]); // Estado a siendo multado
+
+            //cargamos el vector estado
+            linea[27] = Inspector.getNombreEstado();
+            EscribirVehiculosVectorEstado(linea);
         }
 
         private string[] FinEscrituraBoleta(string[] lineaAnt, double reloj, int indiceParquimetro)
@@ -510,6 +536,12 @@ namespace TP_Final.Entidades
             // Aumentamos en 1 la cantidad de infracciones levantadas
             int cantidadInfracciones = Int32.Parse(linea[29]) + 1;
             linea[29] = cantidadInfracciones.ToString();
+
+            linea[21] = "";
+            tDeEventos[13] = (double)Int32.MaxValue;
+            //se pasa el auto a estacionado
+            VehiculosEnSistema[indiceParquimetro].SetEstado(EstadosVehiculo[0]);
+            EscribirVehiculosVectorEstado(linea);
 
             //nos fijamos en el resto de parquimetros is hay algun auto estacionado
             for (int i = indiceParquimetro+1; i < Parquimetros.Length; i++)
@@ -521,18 +553,24 @@ namespace TP_Final.Entidades
                 }
             }
 
-            linea[21] = "";
-            tDeEventos[13] = (double)Int32.MaxValue;
+
+            //escritura boleta reset
+            //linea[21] = "";
+            //tDeEventos[13] = (double)Int32.MaxValue;
             //se va el inspector
             Inspector.SetEstado(EstadosInspector[0]);
             linea[27] = Inspector.getNombreEstado();
-
+            // inspeccion reset
+            linea[20] = "";
+            tDeEventos[12] = (double)Int32.MaxValue;
+            
             //se pasa el auto a estacionado
-            VehiculosEnSistema[indiceParquimetro].SetEstado(EstadosVehiculo[0]);
-            EscribirVehiculosVectorEstado(linea);
+            //VehiculosEnSistema[indiceParquimetro].SetEstado(EstadosVehiculo[0]);
+            //EscribirVehiculosVectorEstado(linea);
 
             return linea;
         }
+        #endregion
         #endregion
 
         public void Simular()
@@ -561,7 +599,7 @@ namespace TP_Final.Entidades
             GenerarProximaLlegadaVehiculo(lineaAnt, new double[] {0, 0});
 
             // Llegada Inspector
-            tDeEventos[1] = (double)Int32.MaxValue;//CalcularLlegadaInspector();
+            tDeEventos[1] = CalcularLlegadaInspector();
             lineaAnt[7] = (tDeEventos[1] + reloj).ToString();
 
             // Fin Turno de Estacionamiento y Estacionamiento Parquimetros : Inicio no hay nada
@@ -631,7 +669,7 @@ namespace TP_Final.Entidades
 
                 // LV, LI, FE1, FE2, FE3, FE4, FE5, FT1, FT2, FT3, FT4, FT5, FI, FB, FinSim
                 if (relojYEvento[1] == 0) { linea = LlegadaVehiculo(lineaAnt, relojYEvento); }
-                //else if (relojYEvento[1] == 1) { linea = LlegadaInspector(lineaAnt, relojYEvento); }
+                else if (relojYEvento[1] == 1) { linea = LlegadaInspector(lineaAnt, relojYEvento); }
                 else if (relojYEvento[1] == 7) { linea = FinTurnoEstacionamiento(lineaAnt, relojYEvento[0], 0); }
                 else if (relojYEvento[1] == 8) { linea = FinTurnoEstacionamiento(lineaAnt, relojYEvento[0], 1); }
                 else if (relojYEvento[1] == 9) { linea = FinTurnoEstacionamiento(lineaAnt, relojYEvento[0], 2); }
@@ -644,13 +682,13 @@ namespace TP_Final.Entidades
                 else if (relojYEvento[1] == 6) { linea = FinEstacionamiento(lineaAnt, relojYEvento[0], 4); }
                 else if (relojYEvento[1] == 12) // SE HACE MAS QUE LLAMAR AL FIN PORQUE HAY QUE CONSEGUIR EL INDICE DE PARQUIMETRO
                 {
-                    //int indiceParquimetro = getIndiceParquimetro(linea[27]);
-                    //linea = FinInspeccion(lineaAnt, relojYEvento[0], indiceParquimetro); 
+                    int indiceParquimetro = getIndiceParquimetro(linea[27]);
+                    linea = FinInspeccion(lineaAnt, relojYEvento[0], indiceParquimetro); 
                 }
                 else if (relojYEvento[1] == 13) // SE HACE MAS QUE LLAMAR AL FIN PORQUE HAY QUE CONSEGUIR EL INDICE DE PARQUIMETRO
                 {
-                    //int indiceParquimetro = getIndiceParquimetro(linea[27]);
-                    //linea = FinEscrituraBoleta(lineaAnt, relojYEvento[0], indiceParquimetro); 
+                    int indiceParquimetro = getIndiceParquimetro(linea[27]);
+                    linea = FinEscrituraBoleta(lineaAnt, relojYEvento[0], indiceParquimetro); 
                 }
                 else
 

@@ -27,7 +27,7 @@ namespace TP_Final
         {
             //Carga la grilla con los contenidos del CSV
 
-            // aca metodo CSV reader supongo que devuelve los 4 valores a cargar (tPromedios por cada uno, porc que retira)
+            // aca metodo CSV readerdevuelve los 2 valores a cargar (Contador Vehiculos Retirados, Infracciones Levantadas)
             double[] resultados = CSVReader.LoadCsvData(CSV);
             gdw_iteracionesSolicitadas.DataSource = CSV;
 
@@ -38,6 +38,8 @@ namespace TP_Final
             }
 
             // Cargamos los estadisticos
+            txt_vehiculosRetirados.Text = resultados[0].ToString();
+            txt_infracciones.Text = resultados[1].ToString();
 
         }
     }

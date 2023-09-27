@@ -61,8 +61,8 @@ namespace TP_Final.Entidades
             GestorSimulacionParquimetros gestorSimulacion = new GestorSimulacionParquimetros(inicioImp, cantidad, finSim, 7, 1);
             gestorSimulacion.Simular();
             MessageBox.Show("Listo rey");
-            //PantallaVisualizacion pantallaVisualizacion = new PantallaVisualizacion(gestorSimulacion.Datos);
-            //pantallaVisualizacion.ShowDialog();
+            PantallaVisualizacion pantallaVisualizacion = new PantallaVisualizacion(gestorSimulacion.Datos);
+            pantallaVisualizacion.ShowDialog();
 
         }
 

@@ -37,56 +37,58 @@ namespace TP_Final.Entidades
                 dt.Columns.Add("Nombre de Evento");
                 dt.Columns.Add("Reloj");
 
-                // Deportistas 2-10
-                dt.Columns.Add("RND L Basket");
-                dt.Columns.Add("TEL Basket");
-                dt.Columns.Add("Prox L Basket");
-                dt.Columns.Add("RND L Handball");
-                dt.Columns.Add("TEL Handball");
-                dt.Columns.Add("Prox L Handball");
-                dt.Columns.Add("RND L Futbol");
-                dt.Columns.Add("TEL Futbol");
-                dt.Columns.Add("Prox L Futbol");
+                // Llegada Vehiculo
+                dt.Columns.Add("RND 1 L Vehiculo");
+                dt.Columns.Add("RND 2 L Vehiculo");
+                dt.Columns.Add("TEL 1 Vehiculo");
+                dt.Columns.Add("TEL 2 Vehiculo");
+                dt.Columns.Add("Prox L Vehiculo");
 
-                // Servidor: Cancha
-                dt.Columns.Add("Quien Juega");
-                dt.Columns.Add("RND DuracionJugada");
-                dt.Columns.Add("DuracionJugada");
-                dt.Columns.Add("Fin de Jugada");
-                dt.Columns.Add("Estado Cancha");
-                dt.Columns.Add("Tam Cola");
-                dt.Columns.Add("TE Limpieza");
-                dt.Columns.Add("Fin Limpieza");
+                // Llegada Inspector
+                dt.Columns.Add("Prox L Inspector");
+
+                // Fin Estacionamiento
+                dt.Columns.Add("RND SeDemora");
+                dt.Columns.Add("SeDemora");
+                dt.Columns.Add("FE Parquimetro 1");
+                dt.Columns.Add("FE Parquimetro 2");
+                dt.Columns.Add("FE Parquimetro 3");
+                dt.Columns.Add("FE Parquimetro 4");
+                dt.Columns.Add("FE Parquimetro 5");
+
+                // Fin Turno Estacionamiento
+                dt.Columns.Add("FTE Parquimetro 1");
+                dt.Columns.Add("FTE Parquimetro 2");
+                dt.Columns.Add("FTE Parquimetro 3");
+                dt.Columns.Add("FTE Parquimetro 4");
+                dt.Columns.Add("FTE Parquimetro 5");
+
+                // Fin Inspeccion
+                dt.Columns.Add("Fin Inspeccion");
+
+                // Fin Escritura Boleta
+                dt.Columns.Add("Fin Escritura Boleta");
+
+                // Estados Parquimetros
+                dt.Columns.Add("Estado Parquimetro 1");
+                dt.Columns.Add("Estado Parquimetro 2");
+                dt.Columns.Add("Estado Parquimetro 3");
+                dt.Columns.Add("Estado Parquimetro 4");
+                dt.Columns.Add("Estado Parquimetro 5");
+
+                // Estado Inspector
+                dt.Columns.Add("Estado Inspector");
 
                 // Estadísticas
-                dt.Columns.Add("T Espera AC Basket");
-                dt.Columns.Add("T Espera AC Futbol");
-                dt.Columns.Add("T Espera AC Handball");
-                dt.Columns.Add("Contador EsperaFinalizada Basket");
-                dt.Columns.Add("Contador EsperaFinalizada Futbol");
-                dt.Columns.Add("Contador EsperaFinalizada Handball");
-                dt.Columns.Add("Cont Llegadas");
-                dt.Columns.Add("Cont Retirados sin Jugar");
+                dt.Columns.Add("Cont. Vehiculos No Encuentran Lugar");
+                dt.Columns.Add("Cont. Infracciones Levantadas");
 
-                // Grupos
-                dt.Columns.Add("Estado G1");
-                dt.Columns.Add("Tiempo de Llegada G1");
-                dt.Columns.Add("Disciplina G1");
-                dt.Columns.Add("Estado G2");
-                dt.Columns.Add("Tiempo de Llegada G2");
-                dt.Columns.Add("Disciplina G2");
-                dt.Columns.Add("Estado G3");
-                dt.Columns.Add("Tiempo de Llegada G3");
-                dt.Columns.Add("Disciplina G3");
-                dt.Columns.Add("Estado G4");
-                dt.Columns.Add("Tiempo de Llegada G4");
-                dt.Columns.Add("Disciplina G4");
-                dt.Columns.Add("Estado G5");
-                dt.Columns.Add("Tiempo de Llegada G5");
-                dt.Columns.Add("Disciplina G5");
-                dt.Columns.Add("Estado G6");
-                dt.Columns.Add("Tiempo de Llegada G6");
-                dt.Columns.Add("Disciplina G6");
+                // Vehiculos
+                dt.Columns.Add("Estado Vehiculo 1");
+                dt.Columns.Add("Estado Vehiculo 2");
+                dt.Columns.Add("Estado Vehiculo 3");
+                dt.Columns.Add("Estado Vehiculo 4");
+                dt.Columns.Add("Estado Vehiculo 5");
                 #endregion
 
                 string[] lineArray = new string[45];
@@ -113,87 +115,72 @@ namespace TP_Final.Entidades
                         lineArray = currentLine.Split(';');
                         DataRow lineRow = dt.NewRow();
                         #region Cargar Valores a la Fila
-
+                        // Reloj y Evento
                         lineRow["Nombre de Evento"] = lineArray[0];
                         lineRow["Reloj"] = lineArray[1];
 
-                        lineRow["RND L Basket"] = lineArray[2];
-                        lineRow["TEL Basket"] = lineArray[3];
-                        lineRow["Prox L Basket"] = lineArray[4];
+                        // Llegada Vehiculo
+                        lineRow["RND 1 L Vehiculo"] = lineArray[2];
+                        lineRow["RND 2 L Vehiculo"] = lineArray[3];
+                        lineRow["TEL 1 Vehiculo"] = lineArray[4];
+                        lineRow["TEL 2 Vehiculo"] = lineArray[5];
+                        lineRow["Prox L Vehiculo"] = lineArray[6];
+
+                        // Llegada Inspector
+                        lineRow["Prox L Inspector"] = lineArray[7];
                         
-                        lineRow["RND L Futbol"] = lineArray[5];
-                        lineRow["TEL Futbol"] = lineArray[6];
-                        lineRow["Prox L Futbol"] = lineArray[7];
-                        
-                        lineRow["RND L Handball"] = lineArray[8];
-                        lineRow["TEL Handball"] = lineArray[9];
-                        lineRow["Prox L Handball"] = lineArray[10];
+                        // Fin Estacionamiento
+                        lineRow["RND SeDemora"] = lineArray[8];
+                        lineRow["SeDemora"] = lineArray[9];
+                        lineRow["FE Parquimetro 1"] = lineArray[10];
+                        lineRow["FE Parquimetro 2"] = lineArray[11];
+                        lineRow["FE Parquimetro 3"] = lineArray[12];
+                        lineRow["FE Parquimetro 4"] = lineArray[13];
+                        lineRow["FE Parquimetro 5"] = lineArray[14];
 
+                        // Fin Turno Estacionamiento
+                        lineRow["FTE Parquimetro 1"] = lineArray[15];
+                        lineRow["FTE Parquimetro 2"] = lineArray[16];
+                        lineRow["FTE Parquimetro 3"] = lineArray[17];
+                        lineRow["FTE Parquimetro 4"] = lineArray[18];
+                        lineRow["FTE Parquimetro 5"] = lineArray[19];
 
-                        lineRow["Quien Juega"] = lineArray[11];
-                        lineRow["RND DuracionJugada"] = lineArray[12];
-                        lineRow["DuracionJugada"] = lineArray[13];
-                        lineRow["Fin de Jugada"] = lineArray[14];
+                        // Fin Inspeccion
+                        lineRow["Fin Inspeccion"] = lineArray[20];
 
-                        lineRow["Estado Cancha"] = lineArray[15];
-                        lineRow["Tam Cola"] = lineArray[16];
-                        lineRow["TE Limpieza"] = lineArray[17];
-                        lineRow["Fin Limpieza"] = lineArray[18];
+                        // Fin Escritura Boleta
+                        lineRow["Fin Escritura Boleta"] = lineArray[21];
 
+                        // Estados Parquimetros
+                        lineRow["Estado Parquimetro 1"] = lineArray[22];
+                        lineRow["Estado Parquimetro 2"] = lineArray[23];
+                        lineRow["Estado Parquimetro 3"] = lineArray[24];
+                        lineRow["Estado Parquimetro 4"] = lineArray[25];
+                        lineRow["Estado Parquimetro 5"] = lineArray[26];
 
-                        lineRow["T Espera AC Basket"] = lineArray[19];
-                        lineRow["T Espera AC Futbol"] = lineArray[20];
-                        lineRow["T Espera AC Handball"] = lineArray[21];
-                        lineRow["Contador EsperaFinalizada Basket"] = lineArray[22];
-                        lineRow["Contador EsperaFinalizada Futbol"] = lineArray[23];
-                        lineRow["Contador EsperaFinalizada Handball"] = lineArray[24];
+                        // Estado Inspector
+                        lineRow["Estado Inspector"] = lineArray[27];
 
-                        lineRow["Cont Llegadas"] = lineArray[25];
-                        lineRow["Cont Retirados sin Jugar"] = lineArray[26];
+                        // Estadisticas
+                        lineRow["Cont. Vehiculos No Encuentran Lugar"] = lineArray[28];
+                        lineRow["Cont. Infracciones Levantadas"] = lineArray[29];
 
-
-                        lineRow["Estado G1"] = lineArray[27];
-                        lineRow["Tiempo de Llegada G1"] = lineArray[28];
-                        lineRow["Disciplina G1"] = lineArray[29];
-                        lineRow["Estado G2"] = lineArray[30];
-                        lineRow["Tiempo de Llegada G2"] = lineArray[31];
-                        lineRow["Disciplina G2"] = lineArray[32];
-                        lineRow["Estado G3"] = lineArray[33];
-                        lineRow["Tiempo de Llegada G3"] = lineArray[34];
-                        lineRow["Disciplina G3"] = lineArray[35];
-                        lineRow["Estado G4"] = lineArray[36];
-                        lineRow["Tiempo de Llegada G4"] = lineArray[37];
-                        lineRow["Disciplina G4"] = lineArray[38];
-                        lineRow["Estado G5"] = lineArray[39];
-                        lineRow["Tiempo de Llegada G5"] = lineArray[40];
-                        lineRow["Disciplina G5"] = lineArray[41];
-                        lineRow["Estado G6"] = lineArray[42];
-                        lineRow["Tiempo de Llegada G6"] = lineArray[43];
-                        lineRow["Disciplina G6"] = lineArray[44];
-
+                        // Vehiculos
+                        lineRow["Estado Vehiculo 1"] = lineArray[30];
+                        lineRow["Estado Vehiculo 2"] = lineArray[31];
+                        lineRow["Estado Vehiculo 3"] = lineArray[32];
+                        lineRow["Estado Vehiculo 4"] = lineArray[33];
+                        lineRow["Estado Vehiculo 5"] = lineArray[34];
                         #endregion
                         dt.Rows.Add(lineRow);
                     }
                 }
 
                 // Se calcula tiempo promedio de espera promedio por cada disciplina deportiva
-                double tEsperaB = double.Parse(lineArray[19]);
-                double tEsperaF = double.Parse(lineArray[20]);
-                double tEsperaH = double.Parse(lineArray[21]);
+                double contVehiculosRetirados = double.Parse(lineArray[28]);
+                double contInfraccionesLevantadas = double.Parse(lineArray[29]);
 
-                double contEfB = double.Parse(lineArray[22]);
-                double contEfF = double.Parse(lineArray[23]);
-                double contEfH = double.Parse(lineArray[24]);
-
-                double contLlegadas = double.Parse(lineArray[25]);
-                double contRSJ = double.Parse(lineArray[26]);
-
-                double promedioB = Truncar(tEsperaB / contEfB);
-                double promedioF = Truncar(tEsperaF / contEfF);
-                double promedioH = Truncar(tEsperaH / contEfH);
-                double porcRSJ = Truncar((contRSJ/contLlegadas)*10000)/100;
-
-                return new double[] { promedioB, promedioF, promedioH, porcRSJ };
+                return new double[] { contVehiculosRetirados, contInfraccionesLevantadas };
             }
             catch (Exception ex)
             {

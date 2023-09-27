@@ -93,6 +93,7 @@
             this.Controls.Add(this.gdw_iteracionesSolicitadas);
             this.Name = "PantallaVisualizacion";
             this.Text = "Visualización de Simulación Parquímetros";
+            this.Load += new System.EventHandler(this.PantallaVisualizacion_Load);
             ((System.ComponentModel.ISupportInitialize)(this.gdw_iteracionesSolicitadas)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
